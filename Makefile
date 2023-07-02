@@ -3,7 +3,7 @@
 outputdir=whiskers.pdx
 projectname=whiskers
 
-.PHONY: all clean
+.PHONY: all clean simulate
 
 clean:
 	if [ -d $(outputdir) ]; then \
@@ -13,3 +13,6 @@ clean:
 
 all:
 	pdc -k . $(outputdir)
+
+simulate:
+	PlaydateSimulator $(outputdir)
