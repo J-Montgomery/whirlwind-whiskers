@@ -1,0 +1,7 @@
+name=Whirlwind Whiskers
+author=JM
+description=A mischievous kitten with amazing powers collects yarn
+bundleID=net.kittenfarmer.Whiskers
+version=0.1
+buildNumber=1
+imagePath=images/
