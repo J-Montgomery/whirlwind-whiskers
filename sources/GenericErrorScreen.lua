@@ -26,6 +26,6 @@ end
 
 function GenericErrorScreen:SetErrorReason(reason)
     self.reason = reason
-    self.secondary_reason = ""
+    self.secondary_reason = "qr loading..."
     gfx.generateQrCode(self.reason, nil, self.QRCallback)
 end

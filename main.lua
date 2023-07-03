@@ -5,6 +5,8 @@ import "sources/CounterScreen"
 import "sources/PlayScreen"
 import "sources/PauseScreen"
 import "sources/GameOverScreen"
+import "sources/GenericErrorScreen"
+import "sources/HeatherGame"
 
 playdate.graphics.drawText("Hello, World!", 95, 100)
 
@@ -18,10 +20,10 @@ screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()
 
 local gameState = {}
-local kGameInitialState, kGamePlayingState, kGamePauseState, kGameOverState, kErrorState = 1, 2, 3, 4, 5
-local currentGameState = kGameInitialState
+local kGameInitialState, kGamePlayingState, kGamePauseState, kGameOverState, kHeatherState, kErrorState = 1, 2, 3, 4, 5, 6
+local currentGameState = kHeatherState
 
-local screens = {CounterScreen(), PlayScreen(), PauseScreen(), GameOverScreen(), ErrorScreen()}
+local screens = {CounterScreen(), PlayScreen(), PauseScreen(), GameOverScreen(), HeatherGameScreen(), GenericErrorScreen()}
 
 local inputHandlers = {
     AButtonDown = function() CurrentMenu():ButtonHandler_A(false, false) end,
