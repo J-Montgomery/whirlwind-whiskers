@@ -18,7 +18,9 @@ local gameState = {initial, playing, paused, over}
 local kGameInitialState, kGamePlayingState, kGamePausedState, kGameOverState = 0, 1, 2, 3
 local currentGameState = kGameInitialState
 
-local function toMode(mode)
+local counterScreen = CounterScreen()
+
+local function toGameMode(mode)
     if mode >= kGameInitialState and mode <= kGameOverState then
         currentGameState = mode
     end
@@ -27,9 +29,9 @@ end
 local function OptionsMenuChangeMode()
     print("Menu item invoked")
     if currentGameState == kGameInitialState then
-        toMode(kGamePausedState)
+        toGameMode(kGamePausedState)
     else
-        toMode(kGameInitialState)
+        toGameMode(kGameInitialState)
     end
 end
 
@@ -40,6 +42,8 @@ local function initialize()
 
     local menu = playdate.getSystemMenu()
     local menuItem, error = menu:addMenuItem("Mode", OptionsMenuChangeMode)
+
+    counterScreen:Initialize()
 end
 
 function playdate.gameWillTerminate()
@@ -54,7 +58,8 @@ function playdate.update()
     gamestate.lastTime = playdate.getTime()
 
     if(currentGameState == kGameInitialState) then
-        RenderCounterScreen()
+        counterScreen:UpdateState(true)
+        counterScreen:UpdateScreen()
     elseif currentGameState == kGamePausedState then
         gfx.clear(gfx.kColorWhite)
         gfx.drawText("Paused", 95, 100)

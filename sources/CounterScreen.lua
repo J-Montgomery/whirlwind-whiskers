@@ -1,19 +1,13 @@
 
 import "TokenBucket"
+import "Menu"
 
 local counterUpdateLock = TokenBucket(1)
 local counter = 0
 
-function InitializeCounterScreen()
-    return true
-end
+class('CounterScreen').extends(Menu)
 
-function UpdateCounterScreenState()
-    return true
-end
-
-function RenderCounterScreen()
-
+function CounterScreen:UpdateScreen()
     if(counterUpdateLock:run() == true) then
         local UIString = string.format("Seconds Elapsed: %d", counter)
         gfx.clear(gfx.kColorWhite)
