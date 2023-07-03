@@ -36,3 +36,7 @@ Controls:
                 Whirlwind toggle
         Menu:
             Brings up menu
+
+### Licensing:
+
+Although this project will remain source-available, it is just demonstration. All rights reserved.
