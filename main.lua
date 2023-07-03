@@ -21,7 +21,7 @@ screenHeight = playdate.display.getHeight()
 
 local gameState = {}
 local kGameInitialState, kGamePlayingState, kGamePauseState, kGameOverState, kHeatherState, kErrorState = 1, 2, 3, 4, 5, 6
-local currentGameState = kHeatherState
+local currentGameState = kGameInitialState
 
 local screens = {CounterScreen(), PlayScreen(), PauseScreen(), GameOverScreen(), HeatherGameScreen(), GenericErrorScreen()}
 
@@ -57,6 +57,10 @@ local function toGameMode(mode)
 
         -- Notify the new menu that it's active
         CurrentMenu():UpdateState(true)
+    else
+        -- This will recurse, but the recursion depth should be limited to 1
+        -- because kErrorState is a special case that is always valid
+        ToErrorMode("Attempted to switch to invalid mode")
     end
 end
 
