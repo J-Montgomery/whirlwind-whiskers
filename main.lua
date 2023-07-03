@@ -18,11 +18,10 @@ screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()
 
 local gameState = {}
-local kGameInitialState, kGamePlayingState, kGamePauseState, kGameOverState = 1, 2, 3, 4
+local kGameInitialState, kGamePlayingState, kGamePauseState, kGameOverState, kErrorState = 1, 2, 3, 4, 5
 local currentGameState = kGameInitialState
 
-
-local screens = {CounterScreen(), PlayScreen(), PauseScreen(), GameOverScreen()}
+local screens = {CounterScreen(), PlayScreen(), PauseScreen(), GameOverScreen(), ErrorScreen()}
 
 local inputHandlers = {
     AButtonDown = function() CurrentMenu():ButtonHandler_A(false, false) end,
@@ -49,10 +48,13 @@ local inputHandlers = {
 }
 
 local function toGameMode(mode)
-    if mode >= kGameInitialState and mode <= kGameOverState then
+    if mode >= kGameInitialState and mode <= kErrorState then
         -- Notify the active menu that it's being paused
         CurrentMenu():UpdateState(false)
         currentGameState = mode
+
+        -- Notify the new menu that it's active
+        CurrentMenu():UpdateState(true)
     end
 end
 
@@ -83,6 +85,13 @@ function CurrentMenu()
     return screens[currentGameState]
 end
 
+function ToErrorMode(reason)
+    -- set the error reason preemptively so that when we switch,
+    -- the error message is displayed immediately
+    screens[kErrorState]:SetErrorReason(reason)
+    toGameMode(kErrorState)
+end
+
 function playdate.gameWillTerminate()
     playdate.inputHandlers.pop()
     playdate.datastore.write(save, "gamestate")
@@ -96,12 +105,11 @@ end
 function playdate.update()
     gamestate.lastTime = playdate.getTime()
 
-    if currentGameState >= kGameInitialState and currentGameState <= kGameOverState then
+    if currentGameState >= kGameInitialState and currentGameState <= kErrorState then
         CurrentMenu():UpdateState(true)
         CurrentMenu():UpdateScreen(true)
     else
-        gfx.clear(gfx.kColorWhite)
-        gfx.drawText("Unknown Mode", 95, 100)
+        ToErrorMode("Unknown game state")
     end
 
     coroutine.yield()
