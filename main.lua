@@ -2,6 +2,9 @@ import "CoreLibs/sprites"
 import "CoreLibs/graphics"
 
 import "sources/CounterScreen"
+import "sources/PlayScreen"
+import "sources/PauseScreen"
+import "sources/GameOverScreen"
 
 playdate.graphics.drawText("Hello, World!", 95, 100)
 
@@ -15,21 +18,23 @@ screenWidth = playdate.display.getWidth()
 screenHeight = playdate.display.getHeight()
 
 local gameState = {initial, playing, paused, over}
-local kGameInitialState, kGamePlayingState, kGamePausedState, kGameOverState = 0, 1, 2, 3
+local kGameInitialState, kGamePlayingState, kGamePauseState, kGameOverState = 1, 2, 3, 4
 local currentGameState = kGameInitialState
 
-local counterScreen = CounterScreen()
+
+local screens = {CounterScreen(), PlayScreen(), PauseScreen(), GameOverScreen()}
 
 local function toGameMode(mode)
     if mode >= kGameInitialState and mode <= kGameOverState then
+        -- Notify the active menu that it's being paused
+        screens[currentGameState]:UpdateState(false)
         currentGameState = mode
     end
 end
 
 local function OptionsMenuChangeMode()
-    print("Menu item invoked")
     if currentGameState == kGameInitialState then
-        toGameMode(kGamePausedState)
+        toGameMode(kGamePlayingState)
     else
         toGameMode(kGameInitialState)
     end
@@ -43,7 +48,9 @@ local function initialize()
     local menu = playdate.getSystemMenu()
     local menuItem, error = menu:addMenuItem("Mode", OptionsMenuChangeMode)
 
-    counterScreen:Initialize()
+    for i, screen in ipairs(screens) do
+        screen:Initialize()
+    end
 end
 
 function playdate.gameWillTerminate()
@@ -57,17 +64,13 @@ end
 function playdate.update()
     gamestate.lastTime = playdate.getTime()
 
-    if(currentGameState == kGameInitialState) then
-        counterScreen:UpdateState(true)
-        counterScreen:UpdateScreen()
-    elseif currentGameState == kGamePausedState then
-        gfx.clear(gfx.kColorWhite)
-        gfx.drawText("Paused", 95, 100)
+    if currentGameState >= kGameInitialState and currentGameState <= kGameOverState then
+        screens[currentGameState]:UpdateState(true)
+        screens[currentGameState]:UpdateScreen(true)
     else
         gfx.clear(gfx.kColorWhite)
         gfx.drawText("Unknown Mode", 95, 100)
     end
-
 
     coroutine.yield()
 end
