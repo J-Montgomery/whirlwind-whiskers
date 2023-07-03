@@ -1,5 +1,6 @@
 
-import "TokenBucket"
+import "utility/TextLayout"
+import "utility/TokenBucket"
 import "Menu"
 
 local HighlightTimer = TokenBucket(2)
@@ -22,12 +23,12 @@ function PlayScreen:UpdateScreen()
             highlighted = true
             gfx.clear(gfx.kColorBlack)
             gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-            gfx.drawText("Highlighted", 95, 100)
+            gfx.drawText("Highlighted", TextCol1, TextRow1)
         else
             highlighted = false
             gfx.clear(gfx.kColorWhite)
             gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-            gfx.drawText("Normal", 95, 100)
+            gfx.drawText("Normal", TextCol1, TextRow1)
         end
     end
 

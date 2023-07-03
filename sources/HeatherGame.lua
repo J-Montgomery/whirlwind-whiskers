@@ -1,3 +1,4 @@
+import "utility/TextLayout"
 import "Menu"
 
 class('HeatherGameScreen').extends(Menu)
@@ -6,18 +7,18 @@ local catName = nil
 
 function HeatherGameScreen:UpdateScreen()
     gfx.clear(gfx.kColorWhite)
-    gfx.drawText("Kittens Rule", 0, 0)
-    gfx.drawText("What's your name?", 0, 20)
-    gfx.drawText("(A) Heather", 0, 40)
-    gfx.drawText("(B) Coco", 0, 60)
+    gfx.drawText("Kittens Rule", TextCol1, TextRow1)
+    gfx.drawText("What's your name?", TextCol1, TextRow2)
+    gfx.drawText("(A) Heather", TextCol1, TextRow3)
+    gfx.drawText("(B) Coco", TextCol1, TextRow4)
 
     if (catName ~= nil) then
         if(catName == "Heather") then
             local UIString = string.format("Hello there, %s!", catName)
-            gfx.drawText(UIString, 0, 100)
+            gfx.drawText(UIString, TextCol1, TextRow6)
         else
             local UIString = string.format("%s go away!", catName)
-            gfx.drawText(UIString, 0, 100)
+            gfx.drawText(UIString, TextCol1, TextRow6)
         end
     end
 
