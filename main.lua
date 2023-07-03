@@ -25,34 +25,33 @@ local currentGameState = kGameInitialState
 local screens = {CounterScreen(), PlayScreen(), PauseScreen(), GameOverScreen()}
 
 local inputHandlers = {
-    AButtonDown = function() screens[currentGameState]:ButtonHandler_A(false, false) end,
-    AButtonHeld = function() screens[currentGameState]:ButtonHandler_A(false, true) end,
-    AButtonUp = function() screens[currentGameState]:ButtonHandler_A(true, false) end,
+    AButtonDown = function() CurrentMenu():ButtonHandler_A(false, false) end,
+    AButtonHeld = function() CurrentMenu():ButtonHandler_A(false,  true) end,
+    AButtonUp   = function() CurrentMenu():ButtonHandler_A(true,  false) end,
 
-    BButtonDown = function() screens[currentGameState]:ButtonHandler_B(false, false) end,
-    BButtonHeld = function() screens[currentGameState]:ButtonHandler_B(false, true) end,
-    BButtonUp = function() screens[currentGameState]:ButtonHandler_B(true, false) end,
+    BButtonDown = function() CurrentMenu():ButtonHandler_B(false, false) end,
+    BButtonHeld = function() CurrentMenu():ButtonHandler_B(false,  true) end,
+    BButtonUp   = function() CurrentMenu():ButtonHandler_B(true,  false) end,
 
-    downButtonDown = function() screens[currentGameState]:ButtonHandler_DPad(DPadDown, false) end,
-    downButtonUp = function() screens[currentGameState]:ButtonHandler_DPad(DPadDown, true) end,
+    downButtonDown = function() CurrentMenu():ButtonHandler_DPad(DPadDown, false) end,
+    downButtonUp   = function() CurrentMenu():ButtonHandler_DPad(DPadDown,  true) end,
 
-    leftButtonDown = function() screens[currentGameState]:ButtonHandler_DPad(DPadLeft, false) end,
-    leftButtonUp = function() screens[currentGameState]:ButtonHandler_DPad(DPadLeft, true) end,
+    leftButtonDown = function() CurrentMenu():ButtonHandler_DPad(DPadLeft, false) end,
+    leftButtonUp   = function() CurrentMenu():ButtonHandler_DPad(DPadLeft,  true) end,
 
-    rightButtonDown = function() screens[currentGameState]:ButtonHandler_DPad(DPadRight, false) end,
-    rightButtonUp = function() screens[currentGameState]:ButtonHandler_DPad(DPadRight, true) end,
+    rightButtonDown = function() CurrentMenu():ButtonHandler_DPad(DPadRight, false) end,
+    rightButtonUp   = function() CurrentMenu():ButtonHandler_DPad(DPadRight,  true) end,
 
-    upButtonDown = function() screens[currentGameState]:ButtonHandler_DPad(DPadUp, false) end,
-    upButtonUp = function() screens[currentGameState]:ButtonHandler_DPad(DPadUp, true) end,
+    upButtonDown = function() CurrentMenu():ButtonHandler_DPad(DPadUp, false) end,
+    upButtonUp   = function() CurrentMenu():ButtonHandler_DPad(DPadUp,  true) end,
 
-    cranked = function(change, acc) screens[currentGameState]:CrankHandler(change, acc) end,
-
+    cranked = function(change, acc) CurrentMenu():CrankHandler(change, acc) end,
 }
 
 local function toGameMode(mode)
     if mode >= kGameInitialState and mode <= kGameOverState then
         -- Notify the active menu that it's being paused
-        screens[currentGameState]:UpdateState(false)
+        CurrentMenu():UpdateState(false)
         currentGameState = mode
     end
 end
@@ -80,6 +79,10 @@ local function initialize()
     playdate.inputHandlers.push(inputHandlers)
 end
 
+function CurrentMenu()
+    return screens[currentGameState]
+end
+
 function playdate.gameWillTerminate()
     playdate.inputHandlers.pop()
     playdate.datastore.write(save, "gamestate")
@@ -94,8 +97,8 @@ function playdate.update()
     gamestate.lastTime = playdate.getTime()
 
     if currentGameState >= kGameInitialState and currentGameState <= kGameOverState then
-        screens[currentGameState]:UpdateState(true)
-        screens[currentGameState]:UpdateScreen(true)
+        CurrentMenu():UpdateState(true)
+        CurrentMenu():UpdateScreen(true)
     else
         gfx.clear(gfx.kColorWhite)
         gfx.drawText("Unknown Mode", 95, 100)
