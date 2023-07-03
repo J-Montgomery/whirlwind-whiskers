@@ -6,7 +6,7 @@ class('TokenBucket', {rate = 0, timestamp = 0, tokens = 0}).extends()
 function TokenBucket:init(tokenRate)
     self.rate = tokenRate
     self.timestamp = playdate.getCurrentTimeMilliseconds()
-    self.tokens = 0
+    self.tokens = tokenRate
 end
 
 function TokenBucket:run()
@@ -16,8 +16,6 @@ function TokenBucket:run()
     if(duration >= (1/self.rate)) then
         self.tokens += math.floor(duration * self.rate)
         self.timestamp = currentTime
-    else
-        return false
     end
 
     if self.tokens > self.rate then
