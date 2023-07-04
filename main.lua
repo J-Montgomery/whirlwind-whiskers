@@ -1,5 +1,8 @@
 import "CoreLibs/sprites"
 import "CoreLibs/graphics"
+import "CoreLibs/timer"
+
+import "sources/utility/Physics"
 
 import "sources/CounterScreen"
 import "sources/PlayScreen"
@@ -69,6 +72,8 @@ local function initialize()
         screen:Initialize()
     end
 
+    StartPhysicsLoop()
+
     playdate.inputHandlers.push(inputHandlers)
 end
 
@@ -110,6 +115,7 @@ end
 
 function playdate.update()
     gamestate.lastTime = playdate.getTime()
+    playdate.timer.updateTimers()
 
     if currentGameState >= kGameInitialState and currentGameState <= kErrorState then
         CurrentMenu():UpdateState(true)
