@@ -24,7 +24,7 @@ screenHeight = playdate.display.getHeight()
 
 local gameState = {}
 local kGameInitialState, kGamePlayingState, kGamePauseState, kGameOverState, kHeatherState, kErrorState = 1, 2, 3, 4, 5, 6
-local currentGameState = kGameInitialState
+local currentGameState = kGamePlayingState
 
 local screens = {CounterScreen(), PlayScreen(), PauseScreen(), GameOverScreen(), HeatherGameScreen(), GenericErrorScreen()}
 

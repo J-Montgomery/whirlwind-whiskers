@@ -1,35 +1,39 @@
 
 import "utility/TextLayout"
-import "utility/TokenBucket"
+import "utility/Physics"
 import "Menu"
-
-local HighlightTimer = TokenBucket(2)
-local highlighted = 0
 
 class('PlayScreen').extends(Menu)
 
+local switchingToActive = true
 function Menu:UpdateState(isActive)
-    if(isActive == false) then
-        -- Reset our Image drawing mode so that we don't mess up other menus
-        gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    if (isActive == true and switchingToActive == true) then
+        switchingToActive = false
+
+        local imageCircle = gfx.image.new("images/circle")
+        -- spawn a bunch of objects
+        for i = 1, 5 do
+            local spriteCircle = gfx.sprite.new(imageCircle)
+            obj = PhysicsObject(spriteCircle, 1, {40 * i, 5}, {0, .1}, {0, .1})
+            PhysicsAddObject(obj)
+        end
+    elseif isActive == false then
+        for idx, physicsObject in pairs(ActivePhysicsEntities) do
+            PhysicsRemoveObject(idx)
+            switchingToActive = true
+        end
     end
 
     return true
 end
 
 function PlayScreen:UpdateScreen()
-    if(HighlightTimer:run() == true) then
-        if(highlighted == false) then
-            highlighted = true
-            gfx.clear(gfx.kColorBlack)
-            gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-            gfx.drawText("Highlighted", TextCol1, TextRow1)
-        else
-            highlighted = false
-            gfx.clear(gfx.kColorWhite)
-            gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-            gfx.drawText("Normal", TextCol1, TextRow1)
-        end
+    gfx.clear(gfx.kColorWhite)
+    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+
+    for idx, physicsObject in pairs(ActivePhysicsEntities) do
+        physicsObject:render()
+        gfx.sprite.update()
     end
 
     return true
