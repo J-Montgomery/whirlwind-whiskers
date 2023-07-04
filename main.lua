@@ -49,26 +49,11 @@ local inputHandlers = {
     cranked = function(change, acc) CurrentMenu():CrankHandler(change, acc) end,
 }
 
-local function toGameMode(mode)
-    if mode >= kGameInitialState and mode <= kErrorState then
-        -- Notify the active menu that it's being paused
-        CurrentMenu():UpdateState(false)
-        currentGameState = mode
-
-        -- Notify the new menu that it's active
-        CurrentMenu():UpdateState(true)
-    else
-        -- This will recurse, but the recursion depth should be limited to 1
-        -- because kErrorState is a special case that is always valid
-        ToErrorMode("Attempted to switch to invalid mode")
-    end
-end
-
 local function OptionsMenuChangeMode()
     if currentGameState == kGameInitialState then
-        toGameMode(kGamePlayingState)
+        ToGameMode(kGamePlayingState)
     else
-        toGameMode(kGameInitialState)
+        ToGameMode(kGameInitialState)
     end
 end
 
@@ -91,11 +76,26 @@ function CurrentMenu()
     return screens[currentGameState]
 end
 
+function ToGameMode(mode)
+    if mode >= kGameInitialState and mode <= kErrorState then
+        -- Notify the active menu that it's being paused
+        CurrentMenu():UpdateState(false)
+        currentGameState = mode
+
+        -- Notify the new menu that it's active
+        CurrentMenu():UpdateState(true)
+    else
+        -- This will recurse, but the recursion depth should be limited to 1
+        -- because kErrorState is a special case that is always valid
+        ToErrorMode("Attempted to switch to invalid mode")
+    end
+end
+
 function ToErrorMode(reason)
     -- set the error reason preemptively so that when we switch,
     -- the error message is displayed immediately
     screens[kErrorState]:SetErrorReason(reason)
-    toGameMode(kErrorState)
+    ToGameMode(kErrorState)
 end
 
 function playdate.gameWillTerminate()
