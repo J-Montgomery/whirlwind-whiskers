@@ -14,9 +14,13 @@ function Menu:UpdateState(isActive)
         -- spawn a bunch of objects
         for i = 1, 5 do
             local spriteCircle = gfx.sprite.new(imageCircle)
-            obj = PhysicsObject(spriteCircle, 1, {40 * i, 5}, {0, .1}, {0, .1})
+            local obj = PhysicsObject(spriteCircle, 1, {40 * i, 5}, {0, .1}, {0, .1})
             PhysicsAddObject(obj)
         end
+
+        local spriteCircle2 = gfx.sprite.new(imageCircle)
+        local obj2 = PhysicsObject(spriteCircle2, 1, {100, 100}, {.5, -0.3}, {0, .1})
+        PhysicsAddObject(obj2)
     elseif isActive == false then
         for idx, physicsObject in pairs(ActivePhysicsEntities) do
             PhysicsRemoveObject(idx)
